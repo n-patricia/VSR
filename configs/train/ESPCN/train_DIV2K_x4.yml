@@ -1,0 +1,87 @@
+# general 
+name: ESPCN_x4_DIV2K
+model_type: SRModel
+scale: 4
+num_gpu: 1
+
+datasets:
+  train:
+    name: DIV2K
+    type: PairedImageDataset
+    gt_dir: ../dataset/DIV2K/train/hr
+    lq_dir: ../dataset/DIV2K/train/lr/X4
+
+    # augmentation
+    gt_size: 192
+    use_hflip: true
+    use_rot: true
+    y_channel: ~
+
+    # data loader
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 16
+  
+  val:
+    name: Set5
+    type: PairedImageDataset
+    gt_dir: ../dataset/Set5/GTmod12
+    lq_dir: ../dataset/Set5/LRbicx4
+    
+    y_channel: ~
+
+# pretrained arch
+network:
+  type: ESPCN
+  num_in_ch: 3
+  num_out_ch: 3
+  num_ch: 64
+  upscale: 4
+
+# pretrained path
+path:
+  pretrain_network: ~
+  strict_load: true
+  train_state: ./expr/train/ESPCN
+  log: ./expr/log/ESPCN
+  tb_logger: ./expr/tb_logger/ESPCN
+
+# training settings
+train:
+  ema_decay: 0.999
+  optim:
+    type: Adam
+    lr: !!float 1e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+
+  scheduler:
+    type: MultiStepLR
+    milestones: [200000]
+    gamma: 0.5
+
+  total_iter: 1000
+  warmup_iter: -1 # no warm up
+
+  # losses
+  pixel_opt:
+    type: L1Loss
+    loss_weight: 1.0
+    reduction: mean
+
+# validation settings
+val:
+  val_freq: !!float 5e3
+  # save_img: false
+
+  metrics:
+    psnr:
+      type: calculate_psnr
+      crop_border: 2
+      test_y_channel: false
+
+# logging settings
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 5e3
+  use_tb_logger: true
+
