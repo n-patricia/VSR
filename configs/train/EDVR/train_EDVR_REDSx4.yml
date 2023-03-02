@@ -15,8 +15,6 @@ datasets:
     flow_dir: ~
     meta_info_file: ./dataset/meta_info/meta_info_REDS_train.txt
     # val_partition: Vimeo  # set to 'official' when use the official validation partition
-    io_backend:
-      type: disk
 
     num_frame: 5
     gt_size: 256
@@ -38,8 +36,6 @@ datasets:
     lq_dir: ./dataset/REDS4/sharp_bicubic
     meta_info_file: ./dataset/meta_info/meta_info_REDS4_test.txt
     # change to 'meta_info_REDSofficial4_test_GT' when use the official validation partition
-    io_backend:
-      type: disk
 
     # cache_data: false
     num_frame: 5
@@ -65,9 +61,9 @@ path:
   pretrain_network: ~
   strict_load: true
   resume_state: ~
-  train_state: ./expr/train/EDVR
-  log: ./expr/log/EDVR
-  tb_logger: ./expr/tb_logger/EDVR
+  train_state: ./experiments/train/EDVR
+  log: ./experiments/log/EDVR
+  tb_logger: ./experiments/tb_logger/EDVR
 
 # training settings
 train:
@@ -109,12 +105,3 @@ logger:
   print_freq: 100
   save_checkpoint_freq: !!float 5e3
   use_tb_logger: true
-  wandb:
-    project: super_resolution_eth-pytorch
-    resume_id: ~
-
-# dist training settings
-# dist_params:
-#   backend: nccl
-#   port: 29500
-

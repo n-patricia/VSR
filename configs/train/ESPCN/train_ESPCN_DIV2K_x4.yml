@@ -1,5 +1,5 @@
 # general 
-name: ESPCN_x4_DIV2K
+name: ESPCN_DIV2K_x4
 model_type: SRModel
 scale: 4
 num_gpu: 1
@@ -8,8 +8,8 @@ datasets:
   train:
     name: DIV2K
     type: PairedImageDataset
-    gt_dir: ../dataset/DIV2K/train/hr
-    lq_dir: ../dataset/DIV2K/train/lr/X4
+    gt_dir: ./dataset/DIV2K/train/hr
+    lq_dir: ./dataset/DIV2K/train/lr/X4
 
     # augmentation
     gt_size: 192
@@ -24,8 +24,8 @@ datasets:
   val:
     name: Set5
     type: PairedImageDataset
-    gt_dir: ../dataset/Set5/GTmod12
-    lq_dir: ../dataset/Set5/LRbicx4
+    gt_dir: ./dataset/Set5/GTmod12
+    lq_dir: ./dataset/Set5/LRbicx4
     
     y_channel: ~
 
@@ -41,9 +41,9 @@ network:
 path:
   pretrain_network: ~
   strict_load: true
-  train_state: ./expr/train/ESPCN
-  log: ./expr/log/ESPCN
-  tb_logger: ./expr/tb_logger/ESPCN
+  train_state: ./experiments/train/ESPCN
+  log: ./experiments/log/ESPCN
+  tb_logger: ./experiments/tb_logger/ESPCN
 
 # training settings
 train:
@@ -84,4 +84,3 @@ logger:
   print_freq: 100
   save_checkpoint_freq: !!float 5e3
   use_tb_logger: true
-

@@ -10,11 +10,9 @@ datasets:
   train:
     name: Vimeo
     type: VimeoDataset
-    gt_dir: ../dataset/vimeo/vimeo_septuplet/sequences
-    lq_dir: ../dataset/vimeo/vimeo_septuplet/BDx4
-    meta_info_file: ../dataset/vimeo/vimeo_septuplet/sep_trainlist.txt
-    # io_backend:
-    #   type: disk
+    gt_dir: ./dataset/vimeo/vimeo_septuplet/sequences
+    lq_dir: ./dataset/vimeo/vimeo_septuplet/BDx4
+    meta_info_file: ./dataset/vimeo/vimeo_septuplet/sep_trainlist.txt
 
     num_frame: 3
     gt_size: 256
@@ -33,12 +31,8 @@ datasets:
   val:
     name: Vid4
     type: VideoTestDataset
-    gt_dir: ../dataset/Vid4/GT
-    lq_dir: ../dataset/Vid4/BDx4
-
-    cache_data: True
-    # io_backend:
-    #  type: disk
+    gt_dir: ./dataset/Vid4/GT
+    lq_dir: ./dataset/Vid4/BDx4
 
     num_frame: 3  # not needed
 
@@ -55,9 +49,9 @@ path:
   pretrain_network: ~
   strict_load: true
   resume_state: ~
-  train_state: ./expr/train/ESPCN
-  log: ./expr/log/ESPCN
-  tb_logger: ./expr/tb_logger/ESPCN
+  train_state: ./experiments/train/ESPCN
+  log: ./experiments/log/ESPCN
+  tb_logger: ./experiments/tb_logger/ESPCN
 
 # training settings
 train:
@@ -79,8 +73,8 @@ train:
   # losses
   pixel_opt:
     type: L1Loss
-    # loss_weight: 1.0
-    # reduction: mean
+    loss_weight: 1.0
+    reduction: mean
 
 # validation settings
 val:
@@ -98,11 +92,3 @@ logger:
   print_freq: 100
   save_checkpoint_freq: !!float 5e3
   use_tb_logger: true
-  # wandb:
-  #   project: ~
-  #   resume_id: ~
-
-# dist training settings
-# dist_params:
-#   backend: nccl
-#   port: 29500

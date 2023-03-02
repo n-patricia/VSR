@@ -10,11 +10,9 @@ datasets:
   train:
     name: Vimeo
     type: VimeoRecurrentDataset
-    gt_dir: ../dataset/vimeo/vimeo_septuplet/sequences
-    lq_dir: ../dataset/vimeo/BDx4
-    meta_info_file: ../dataset/vimeo/train_Vimeo_GT.txt
-    # io_backend:
-    #   type: disk
+    gt_dir: ./dataset/vimeo/vimeo_septuplet/sequences
+    lq_dir: ./dataset/vimeo/BDx4
+    meta_info_file: ./dataset/vimeo/vimeo_septuplet/sep_trainlist.txt
 
     num_frame: -1
     gt_size: 256
@@ -33,12 +31,10 @@ datasets:
   val:
     name: Vid4
     type: VideoRecurrentTestDataset
-    gt_dir: ../dataset/Vid4/GT
-    lq_dir: ../dataset/Vid4/BDx4
+    gt_dir: ./dataset/Vid4/GT
+    lq_dir: ./dataset/Vid4/BDx4
 
     cache_data: True
-    # io_backend:
-    #  type: disk
 
     num_frame: -1  # not needed
     padding: reflection_circle
@@ -48,13 +44,16 @@ network:
   type: BasicVSR
   num_feat: 64
   num_block: 30
-  spynet_path: ./expr/pretrained_models/flownet/spynet_sintel_final-3d2a1287.pth
+  spynet_path: ./pretrained_models/flownet/spynet_sintel_final-3d2a1287.pth
 
 # path
 path:
   pretrain_network: ~
   strict_load: true
   resume_state: ~
+  train_state: ./experiments/train/BasicVSR
+  log: ./experiments/log/BasicVSR
+  tb_logger: ./experiments/tb_logger/BasicVSR
 
 # training settings
 train:
@@ -98,14 +97,7 @@ logger:
   print_freq: 100
   save_checkpoint_freq: !!float 5e3
   use_tb_logger: true
-  # wandb:
-  #   project: ~
-  #   resume_id: ~
 
-# dist training settings
-# dist_params:
-#   backend: nccl
-#   port: 29500
 
 find_unused_parameters: true
 
