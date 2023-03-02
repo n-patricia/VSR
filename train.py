@@ -80,20 +80,13 @@ def train_pipeline(root_path):
             os.makedirs(tb_logger_dir)
         tb_logger = init_tb_logger(tb_logger_dir)
 
-    # resume_state = load_resume_state(opt)
-    # if resume_state is None:
-    #     os.makedirs(opt['state_path'], exist_ok=True)
-
     model = build_model(opt)
-    # if resume_state:
-    #     start_epoch = resume_state['epoch']
-    #     current_iter = resume_state['iter']
-    # else:
+
     start_epoch = 0
     current_iter = 0
 
     train_loader, val_loader, total_epochs = create_train_val_dataloader(opt)
-    # logger.info(f'Start training...')
+
     start_time = time.time()
     for epoch in range(start_epoch, total_epochs+1):
 
@@ -111,7 +104,6 @@ def train_pipeline(root_path):
                                     model.loss_dict['l_pix'], current_iter)
 
             if current_iter % opt['logger']['save_checkpoint_freq'] == 0:
-                # logger.info(f'epoch: {epoch} iter: {current_iter} lr: {model.get_learning_rate()}')
                 model.save(current_iter)
 
             if opt.get('val') is not None and (current_iter % opt['logger']['print_freq'] == 0):
@@ -119,4 +111,4 @@ def train_pipeline(root_path):
 
 
 if __name__=='__main__':
-    train_pipeline('./pytorch')
+    train_pipeline('./VSR')
