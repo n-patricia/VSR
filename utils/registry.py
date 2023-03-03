@@ -24,7 +24,7 @@ class Registry:
         name = obj.__name__
         self._do_register(name, obj, suffix)
 
-    def get(self, name, suffix='pytorch'):
+    def get(self, name, suffix='VSR'):
         ret = self._obj_map.get(name)
         if ret is None:
             ret = self._obj_map.get(f'{name}_{suffix}')

@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import torch
 
 from utils import reorder_image, to_y_channel
 

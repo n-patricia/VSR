@@ -25,16 +25,16 @@ def _ordered_yaml():
 
 
 def yaml_load(yamlfile):
-    if os.path.isfile(yamlfile):
-        with open(yamlfile, 'r') as f:
+    with open(yamlfile, 'r') as f:
+        if os.path.isfile(yamlfile):
             return yaml.load(f, Loader=_ordered_yaml()[0])
-    else:
-        return yaml.load(f, Loader=_ordered_yaml()[0])
+        else:
+            return yaml.load(f, Loader=_ordered_yaml()[0])
 
 
 def parse_options(root_path, is_train=True):
-    parser = argparse.ArgumentParser(description='Super Resolution Video')
-    parser.add_argument('--opt', type=str, default='./config/train/ESPCN/train_DIV2K_x4.yml')
+    parser = argparse.ArgumentParser(description='Video Super Resolution')
+    parser.add_argument('--opt', type=str, default='./configs/train/ESPCN/train_ESPCN_DIV2K_x4.yml')
 
     args = parser.parse_args()
     # opt = vars(args)

@@ -13,7 +13,7 @@ from utils.registry import ARCH_REGISTRY
 @ARCH_REGISTRY.register()
 class ESPCN(nn.Module):
     def __init__(self, num_in_ch, num_out_ch, num_ch, upscale=4):
-        super(ESPCN, self).__init__(opt)
+        super(ESPCN, self).__init__()
         self.num_in_ch = num_in_ch
         self.num_out_ch = num_out_ch
         self.num_ch = num_ch

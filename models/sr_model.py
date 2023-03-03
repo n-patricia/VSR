@@ -126,7 +126,7 @@ class SRModel(BaseModel):
             out_dict['gt'] = self.gt.detach().cpu()
         return out_dict
 
-    def _calculate_metric(self, data, opt):
+    def _calculate_metrics(self, data, opt):
         metric_type = opt.get('type')
         metric = getattr(utils, metric_type)
         return metric(data['image1'], data['image2'], **opt)
