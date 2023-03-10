@@ -100,7 +100,7 @@ class REDSRecurrentDataset(data.Dataset):
 
         self.interval_list = opt['interval_list']
         self.random_reverse = opt['random_reverse']
-        interval_str = ','.join(str(x) for x in self.interval_list)
+        # interval_str = ','.join(str(x) for x in self.interval_list)
 
     def __getitem__(self, index):
         scale = self.opt['upscale']

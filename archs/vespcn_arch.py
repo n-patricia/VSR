@@ -65,6 +65,7 @@ class VESPCN(nn.Module):
         self.espcn = ESPCN(self.num_in_ch, self.num_out_ch, self.num_ch, self.upscale)
 
     def forward(self, frames):
+        b, t, c, h, w = frames.size()
         x1 = frames[:, 0, :, :, :]
         x2 = frames[:, 1, :, :, :]
         x3 = frames[:, 2, :, :, :]
