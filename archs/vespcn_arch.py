@@ -20,6 +20,7 @@ class SimpleBlock(nn.Module):
     def forward(self, x):
         return self.conv(x)
 
+
 class MotionCompensator(nn.Module):
     def __init__(self):
         super(MotionCompensator, self).__init__()
@@ -31,7 +32,7 @@ class MotionCompensator(nn.Module):
             nn.Conv2d(24, 32, 3, 1), nn.Tanh(), nn.PixelShuffle(4))
 
         self.fine_flow = nn.Sequential(
-            nn.Conv2d(5*self.num_in_ch, 24, 5, 2, 2), nn.ReLU(inplace=True),
+            nn.Conv2d((3*self.num_in_ch)+2, 24, 5, 2, 2), nn.ReLU(inplace=True),
             make_layer(SimpleBlock, 3),
             nn.Conv2d(24, 8, 3, 1, 1), nn.Tanh(), nn.PixelShuffle(2))
 
