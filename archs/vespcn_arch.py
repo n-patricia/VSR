@@ -47,7 +47,7 @@ class MotionCompensator(nn.Module):
         fine_out = self.fine_flow(fine_in)
         # fine_out[:, 0] /= x1.shape[3]
         # fine_out[:, 1] /= x2.shape[2]
-        flow = (coarse_out + fine_out)
+        flow = coarse_out + fine_out
 
         x2_compensated = flow_warp(x2, torch.permute(flow, (0,2,3,1)))
 
@@ -58,12 +58,8 @@ class MotionCompensator(nn.Module):
 class VESPCN(nn.Module):
     def __init__(self, num_in_ch, num_out_ch, num_ch, upscale=4):
         super(VESPCN, self).__init__()
-        self.num_in_ch = num_in_ch
-        self.num_out_ch = num_out_ch
-        self.num_ch = num_ch
-        self.upscale = upscale
-        self.motion_compensator = MotionCompensator()
-        self.espcn = ESPCN(self.num_in_ch, self.num_out_ch, self.num_ch, self.upscale)
+        self.motion_compensator = MotionCompensator(num_in_ch, num_ch)
+        self.espcn = ESPCN(num_in_ch, num_out_ch, num_ch, upscale)
 
     def forward(self, frames):
         b, t, c, h, w = frames.size()
