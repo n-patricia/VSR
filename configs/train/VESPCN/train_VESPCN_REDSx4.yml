@@ -13,8 +13,6 @@ datasets:
     gt_dir: ../../dataset/benchmark/REDS4/GT
     lq_dir: ../../dataset/benchmark/REDS4/sharp_bicubic
     meta_info_file: ../../dataset/benchmark/REDS4/meta_info_REDS4.txt
-    # io_backend:
-    #   type: disk
 
     num_frame: 3
     gt_size: 256
@@ -28,8 +26,6 @@ datasets:
     # data loader
     num_worker_per_gpu: 0
     batch_size_per_gpu: 4
-    # dataset_enlarge_ratio: 200
-    # prefetch_mode: ~
 
   val:
     name: Vid4
@@ -37,12 +33,8 @@ datasets:
     gt_dir: ../../dataset/benchmark/Vid4/GT
     lq_dir: ../../dataset/benchmark/Vid4/BDx4
 
-    # cache_data: True
-    # io_backend:
-    #   type: disk
-
     num_frame: 3  # not needed
-    padding: ~
+    padding: reflection_circle
 
 # network structures
 network:
@@ -101,4 +93,3 @@ logger:
   print_freq: 100
   save_checkpoint_freq: !!float 5e3
   use_tb_logger: true
-  # wandb:

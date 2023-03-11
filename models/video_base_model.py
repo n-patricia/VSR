@@ -46,7 +46,7 @@ class VideoBaseModel(SRModel):
 
             del self.lq
             del self.output
-            torch.cuda_empty_cache()
+            torch.cuda.empty_cache()
 
             for k, v in enumerate(self.opt['val']['metrics'].values()):
                 result = self._calculate_metrics(metric_data, v)

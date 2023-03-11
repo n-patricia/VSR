@@ -28,7 +28,7 @@ class EDVRModel(VideoBaseModel):
                              'lr': train_opt['optim']['lr']*dcn_lr_mul}]
 
         optim_type = train_opt['optim'].pop('type')
-        self.optimizers = self._get_optimizer(optim_type, optim_params,
+        self.optimizer = self._get_optimizer(optim_type, optim_params,
                                             **train_opt['optim'])
 
     def optimize_parameters(self, current_iter):

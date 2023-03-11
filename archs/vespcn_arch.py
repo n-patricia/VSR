@@ -22,19 +22,19 @@ class SimpleBlock(nn.Module):
 
 
 class MotionCompensator(nn.Module):
-    def __init__(self):
+    def __init__(self, num_in_ch=3, num_feat=24):
         super(MotionCompensator, self).__init__()
         self.coarse_flow = nn.Sequential(
-            nn.Conv2d(2*self.num_in_ch, 24, 5, 2), nn.ReLU(inplace=True),
-            nn.Conv2d(24, 24, 3, 1), nn.ReLU(inplace=True),
-            nn.Conv2d(24, 24, 5, 2), nn.ReLU(inplace=True),
-            nn.Conv2d(24, 24, 3, 1), nn.ReLU(inplace=True),
-            nn.Conv2d(24, 32, 3, 1), nn.Tanh(), nn.PixelShuffle(4))
+            nn.Conv2d(2*num_in_ch, num_feat, 5, 2, 1), nn.ReLU(inplace=True),
+            nn.Conv2d(num_feat, num_feat, 3, 1, 2), nn.ReLU(inplace=True),
+            nn.Conv2d(num_feat, num_feat, 5, 2, 1), nn.ReLU(inplace=True),
+            nn.Conv2d(num_feat, num_feat, 3, 1, 2), nn.ReLU(inplace=True),
+            nn.Conv2d(num_feat, 32, 3, 1), nn.Tanh(), nn.PixelShuffle(4))
 
         self.fine_flow = nn.Sequential(
-            nn.Conv2d((3*self.num_in_ch)+2, 24, 5, 2, 2), nn.ReLU(inplace=True),
+            nn.Conv2d((3*num_in_ch)+2, num_feat, 5, 2, 2), nn.ReLU(inplace=True),
             make_layer(SimpleBlock, 3),
-            nn.Conv2d(24, 8, 3, 1, 1), nn.Tanh(), nn.PixelShuffle(2))
+            nn.Conv2d(num_feat, 8, 3, 1, 1), nn.Tanh(), nn.PixelShuffle(2))
 
     def forward(self, x1, x2):
         coarse_in = torch.cat((x1, x2), dim=1)

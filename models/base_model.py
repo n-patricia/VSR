@@ -42,7 +42,7 @@ class BaseModel:
         if scheduler_type in ['MultiStepLR', 'MultiStepRestartLR']:
             self.scheduler = lr_scheduler.MultiStepLR(self.optimizer, **train_opt['scheduler'])
         elif scheduler_type == 'CosineAnnealingLR':
-            self.scheduler = lr_scheduler.CosineAnnealingLR(optimizer, **train_opt['scheduler'])
+            self.scheduler = lr_scheduler.CosineAnnealingLR(self.optimizer, **train_opt['scheduler'])
         else:
             raise NotImplementedError(f'Scheduler {scheduler_type} is not implemented yet')
 
