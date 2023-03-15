@@ -8,6 +8,7 @@ import torch
 import torch.utils.data as data
 
 from data.data_util import generate_from_indices, img2tensor
+from utils import get_logger
 from utils.registry import DATASET_REGISTRY
 
 
@@ -19,6 +20,10 @@ class VideoTestDataset(data.Dataset):
         # self.cache_data = opt['cache_data']
         self.data_info = {'lq_path': [], 'gt_path': [], 'folder': [], 'idx': []}
         self.gt_dir, self.lq_dir = opt['gt_dir'], opt['lq_dir']
+
+        logger = get_logger()
+        logger.info(f"Generate data info for VideoTestDataset - {opt['name']}")
+
         self.image_lqs = {}
         self.image_gts = {}
         subfolders = sorted(glob.glob(osp.join(self.gt_dir, '*')))
@@ -74,5 +79,30 @@ class VideoTestDataset(data.Dataset):
 
         return images
 
+    def __len__(self):
+        return len(self.folders)
+    
+
+
+class VideoRecurrentTestDataset(VideoTestDataset):
+    def __init__(self, opt):
+        super(VideoRecurrentTestDataset, self).__init__(opt)
+        logger = get_logger()
+        logger.info(f"Generate data info for VideoRecurrentTestDataset - {opt['name']}")
+
+        self.folders = sorted(list(set(self.data_info['folder'])))
+
+    def __getitem__(self, index):
+        folder = self.folders[index]
+
+        image_lqs = self.image_lqs[folder]
+        image_lqs = img2tensor(image_lqs)
+        image_lqs = torch.stack(image_lqs, dim=0)
+        image_gts = self.image_gts[folder]
+        image_gts = img2tensor(image_gts)
+        image_gts = torch.stack(image_gts, dim=0)
+
+        return {'gt': image_gts, 'lq': image_lqs, 'folder': folder}
+    
     def __len__(self):
         return len(self.folders)

@@ -1,5 +1,5 @@
 # general settings
-name: BasicVSR_Vimeo_BDx4
+name: BasicVSR_REDSx4
 model_type: VideoRecurrentModel
 scale: 4
 num_gpu: 1  # set num_gpu: 0 for cpu mode
@@ -8,43 +8,37 @@ manual_seed: 0
 # dataset and data loader settings
 datasets:
   train:
-    name: Vimeo
-    type: VimeoRecurrentDataset
-    gt_dir: ./dataset/vimeo/vimeo_septuplet/sequences
-    lq_dir: ./dataset/vimeo/BDx4
-    meta_info_file: ./dataset/vimeo/vimeo_septuplet/sep_trainlist.txt
+    name: REDS
+    type: REDSRecurrentDataset
+    gt_dir: ./dataset/REDS/train_sharp
+    lq_dir: ./dataset/REDS/train_sharp_bicubic/X4
+    meta_info_file: ./data/meta_info/meta_info_REDS_GT.txt
 
-    num_frame: -1
+    num_frame: 15
     gt_size: 256
     interval_list: [1]
     random_reverse: false
     use_hflip: true
     use_rot: true
-    flip_sequence: true
 
     # data loader
     num_worker_per_gpu: 1
     batch_size_per_gpu: 4
-    # dataset_enlarge_ratio: 200
-    # prefetch_mode: ~
 
   val:
-    name: Vid4
+    name: REDS4
     type: VideoRecurrentTestDataset
-    gt_dir: ./dataset/Vid4/GT
-    lq_dir: ./dataset/Vid4/BDx4
-
-    cache_data: True
+    gt_dir: ./dataset/REDS4/GT
+    lq_dir: ./dataset/REDS4/sharp_bicubic
 
     num_frame: -1  # not needed
-    padding: reflection_circle
 
 # network structures
 network:
   type: BasicVSR
   num_feat: 64
   num_block: 30
-  spynet_path: ./pretrained_models/flownet/spynet_sintel_final-3d2a1287.pth
+  spynet_path: ./pretrained/flownet/spynet_sintel_final-3d2a1287.pth
 
 # path
 path:
@@ -65,8 +59,9 @@ train:
     betas: [0.9, 0.99]
 
   scheduler:
-    type: CosineAnnealingLR
-    T_max: 1000
+    type: CosineAnnealingWarmRestarts
+    T_0: 500
+    T_mult: 1
     eta_min: !!float 1e-7
     last_epoch: -1
 
@@ -77,7 +72,7 @@ train:
 
   # losses
   pixel_opt:
-    type: MSELoss
+    type: CharbonnierLoss
     loss_weight: 1.0
     reduction: mean
 
@@ -97,7 +92,3 @@ logger:
   print_freq: 100
   save_checkpoint_freq: !!float 5e3
   use_tb_logger: true
-
-
-find_unused_parameters: true
-

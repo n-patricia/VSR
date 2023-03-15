@@ -1,6 +1,4 @@
 import functools
-import torch
-import torch.nn.functional as F
 
 
 def weight_reduce_loss(loss, weight=None, reduction='mean'):

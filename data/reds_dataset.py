@@ -6,6 +6,7 @@ import torch
 import torch.utils.data as data
 
 from data.data_util import augment, img2tensor, paired_random_crop
+from utils import get_logger
 from utils.registry import DATASET_REGISTRY
 
 
@@ -29,6 +30,8 @@ class REDSDataset(data.Dataset):
         self.interval_list = opt['interval_list']
         self.random_reverse = opt['random_reverse']
         interval_str = ','.join(str(x) for x in opt['interval_list'])
+        logger = get_logger()
+        logger.info(f'Temporal augmentation interval list: [{interval_str}]; random reverse is {self.random_reverse}')
 
     def __getitem__(self, index):
         scale = self.opt['scale']

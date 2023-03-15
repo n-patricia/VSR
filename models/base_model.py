@@ -80,12 +80,12 @@ class BaseModel:
 
     def save_network(self, net, current_iter, param_key='params'):
         if not osp.exists(self.opt['path'].get('train_state', None)):
-            os.makedirs(self.opt['path'].get('train_state'), None)
+            os.makedirs(self.opt['path'].get('train_state'))
 
         if current_iter == -1:
             current_iter = 'latest'
-        save_filename = f"net_{self.opt['model_type']}_x{self.opt['scale']}_iter{current_iter}.pth"
-        save_path = osp.join(self.opt['path'].get('train_state', None), save_filename)
+        save_filename = f"net_{self.opt['name']}_iter{current_iter}.pth"
+        save_path = osp.join(self.opt['path'].get('train_state'), save_filename)
 
         net = net if isinstance(net, list) else [net]
         param_key = param_key if isinstance(param_key, list) else [param_key]
@@ -114,3 +114,10 @@ class BaseModel:
                 load_net.pop(k)
         net.load_state_dict(load_net, strict=strict)
 
+    def print_network(self, net):
+        net_cls_str = f'{net.__cls__.__name__}'
+        net_params = sum(map(lambda x: x.numel(), net.parameters()))
+
+        logger = get_logger()
+        logger.info(f'Network: {net_cls_str}, with parameters: {net_params:,d}')
+        logger.info(net_cls_str)

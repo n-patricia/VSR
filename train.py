@@ -1,9 +1,9 @@
-import os
-import os.path as osp
+import datetime
 import math
 import time
-from datetime import date
 import logging
+import os
+import os.path as osp
 
 import torch
 
@@ -18,7 +18,7 @@ def get_device():
     return device
 
 
-def create_train_val_dataloader(opt):
+def create_train_val_dataloader(opt, logger):
     train_loader, val_loader = None, None
     total_epochs = 100
     for phase, dataset_opt in opt['datasets'].items():
@@ -28,10 +28,15 @@ def create_train_val_dataloader(opt):
             train_loader = build_dataloader(train_set, dataset_opt, num_gpu=opt['num_gpu'])
             num_iter_per_epoch = math.ceil(len(train_set) / dataset_opt['batch_size_per_gpu'])
             total_epochs = math.ceil(opt['train']['total_iter'] / num_iter_per_epoch)
+            logger.info("Training statistics:" 
+                        f"\n\tNumber of train images: {len(train_set)}"
+                        f"\n\tBatch size per gpu: {dataset_opt['batch_size_per_gpu']}"
+                        f"\n\tTotal epochs: {total_epochs}; iter: {opt['train']['total_iter']}")
         elif phase == 'val':
             dataset_opt['is_train'] = False
             val_set = build_dataset(dataset_opt)
             val_loader = build_dataloader(val_set, dataset_opt)
+            logger.info(f"Number of val images/folders in {dataset_opt['name']}: {len(val_set)}")
         else:
             raise ValueError(f'Dataset phase {phase} is not recognized')
 
@@ -41,7 +46,7 @@ def create_train_val_dataloader(opt):
 def load_resume_state(opt):
     resume_state_path = None
     if opt['auto_resume']:
-        state_path = f"{opt['name']}_train_ckpt"
+        state_path = f"{opt['path'].get('train_state')}"
         if osp.isdir(state_path):
             states = list(os.listdir(state_path))
             if len(states) > 0:
@@ -66,13 +71,13 @@ def train_pipeline(root_path):
 
     train_opt = opt['train']
     total_iter = train_opt['total_iter']
-    device = get_device()
+    # device = get_device()
 
-    # log_dir = opt['path']['log']
-    # if not osp.exists(log_dir):
-    #     os.makedirs(log_dir)
-    # log_file = osp.join(log_dir, f"train_{opt['name']}.log")
-    # logger = get_logger(logger_name=opt['name'], log_level=logging.INFO, log_file=log_file)
+    log_dir = opt['path']['log']
+    if not osp.exists(log_dir):
+        os.makedirs(log_dir)
+    log_file = osp.join(log_dir, f"train_{opt['name']}.log")
+    logger = get_logger(logger_name=opt['name'], log_level=logging.INFO, log_file=log_file)
 
     if opt['logger']['use_tb_logger']:
         tb_logger_dir = osp.join(opt['path']['tb_logger'], opt['name'])
@@ -85,8 +90,8 @@ def train_pipeline(root_path):
     start_epoch = 0
     current_iter = 0
 
-    train_loader, val_loader, total_epochs = create_train_val_dataloader(opt)
-
+    train_loader, val_loader, total_epochs = create_train_val_dataloader(opt, logger)
+    logger.info(f'Start training from epoch: {start_epoch}, iter: {current_iter}')
     start_time = time.time()
     for epoch in range(start_epoch, total_epochs+1):
 
@@ -104,10 +109,23 @@ def train_pipeline(root_path):
                                     model.loss_dict['l_pix'], current_iter)
 
             if current_iter % opt['logger']['save_checkpoint_freq'] == 0:
+                logger.info('Saving models and training states.')
                 model.save(current_iter)
 
             if opt.get('val') is not None and (current_iter % opt['logger']['print_freq'] == 0):
+                logger.info(f'Validation on iter {current_iter}')
                 model.validation(val_loader, current_iter, tb_logger)
+
+    consumed_time = str(datetime.timedelta(seconds=int(time.time() - start_time)))
+    logger.info(f'End of training. Time consumed: {consumed_time}')
+    logger.info('Save the latest model')
+    model.save(current_iter=-1)
+
+    if opt.get('val') is not None:
+        model.validation(val_loader, current_iter, tb_logger)
+
+    if tb_logger:
+        tb_logger.close()
 
 
 if __name__=='__main__':

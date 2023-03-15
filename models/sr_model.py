@@ -20,6 +20,7 @@ class SRModel(BaseModel):
     def __init__(self, opt):
         super(SRModel, self).__init__(opt)
         self.net = build_network(opt['network']).to(self.device)
+        self.print_network(self.net)
 
         # load pretrained models
         # load_path = self.opt['path'].get('pretrain_network', None)
@@ -113,10 +114,24 @@ class SRModel(BaseModel):
             for k, v in self.opt['val']['metrics'].items():
                 self.metric_results[k] += self._calculate_metrics(metric_data, v)
 
-        for metric in self.metric_results.keys():
-            self.metric_results[metric] /= (idx+1)
-            tb_logger.add_scalar(f'metrics/{metric}',
-                                 self.metric_results[metric], current_iter)
+        # for metric in self.metric_results.keys():
+        #     self.metric_results[metric] /= (idx+1)
+        #     tb_logger.add_scalar(f'metrics/{metric}',
+        #                          self.metric_results[metric], current_iter)
+        self._log_validation_metric_values(current_iter, dataset_name, tb_logger)
+
+    
+    def _log_validation_metric_values(self, current_iter, dataset_name, tb_logger):
+        log_str = f"Validation {dataset_name}\n"
+        for metric, value in self.metric_results.items():
+            log_str += f"\t # {metric}: {value:.4f}\n"
+
+        logger = get_logger()
+        logger.info(log_str)
+        if tb_logger:
+            for metric, value in self.metric_results.items():
+                tb_logger.add_scalar(f"metrics/{dataset_name}/{metric}", value, current_iter)
+
 
     def _get_current_visuals(self):
         out_dict = OrderedDict()

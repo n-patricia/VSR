@@ -4,13 +4,13 @@ from collections import Counter
 import torch
 
 from data.data_util import tensor2img
-from models.sr_model import SRModel
+from models.video_base_model import VideoBaseModel
 from utils import get_logger
 from utils.registry import MODEL_REGISTRY
 
 
 @MODEL_REGISTRY.register()
-class VideoRecurrentModel(SRModel):
+class VideoRecurrentModel(VideoBaseModel):
     def __init__(self, opt):
         super(VideoRecurrentModel, self).__init__()
         if self.is_train:
@@ -107,8 +107,10 @@ class VideoRecurrentModel(SRModel):
                         result = self._calculate_metrics(metric_data, v)
                         self.metric_results[folder][idx, k] += result
 
-            tb_logger.add_scalar(f'metrics/{folder}',
-                                 self.metric_results[folder].mean(), current_iter)
+            # tb_logger.add_scalar(f'metrics/{folder}',
+            #                      self.metric_results[folder].mean(), current_iter)
+        self._log_validation_metric_values(current_iter, dataset_name, tb_logger)
+        
 
     def test(self):
         n = self.lq.size(1)
