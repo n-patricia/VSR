@@ -7,11 +7,10 @@ import torch.optim as optim
 import torch.optim.lr_scheduler as lr_scheduler
 
 from archs import build_network
-from data.data_util import tensor2img
 from losses import build_loss
 from models.base_model import BaseModel
 import utils
-from utils import get_logger
+from utils import get_logger, tensor2img
 from utils.registry import MODEL_REGISTRY
 
 
@@ -29,6 +28,7 @@ class SRModel(BaseModel):
 
         if self.is_train:
             self._init_training()
+
 
     def _init_training(self):
         self.net.train()
@@ -50,6 +50,7 @@ class SRModel(BaseModel):
         self.setup_optimizers()
         self.setup_schedulers()
 
+
     def setup_optimizers(self):
         train_opt = self.opt['train']
         optim_params = []
@@ -60,10 +61,12 @@ class SRModel(BaseModel):
         optim_type = train_opt['optim'].pop('type')
         self.optimizer = self._get_optimizer(optim_type, optim_params, train_opt['optim']['lr'])
 
+
     def feed_data(self, data):
         self.lq = data['lq'].to(self.device)
         if 'gt' in data:
             self.gt = data['gt'].to(self.device)
+
 
     def optimize_parameters(self, current_iter):
         self.optimizer.zero_grad()
@@ -80,14 +83,17 @@ class SRModel(BaseModel):
         self.loss_dict = loss_dict
         self.optimizer.step()
 
+
     def save(self, current_iter):
         self.save_network(self.net, current_iter)
+
 
     def test(self):
         self.net.eval()
         with torch.no_grad():
             self.output = self.net(self.lq)
         self.net.train()
+
 
     def validation(self, dataloader, current_iter, tb_logger):
         dataset_name = dataloader.dataset.opt['name']
@@ -120,7 +126,7 @@ class SRModel(BaseModel):
         #                          self.metric_results[metric], current_iter)
         self._log_validation_metric_values(current_iter, dataset_name, tb_logger)
 
-    
+
     def _log_validation_metric_values(self, current_iter, dataset_name, tb_logger):
         log_str = f"Validation {dataset_name}\n"
         for metric, value in self.metric_results.items():
@@ -140,6 +146,7 @@ class SRModel(BaseModel):
         if hasattr(self, 'gt'):
             out_dict['gt'] = self.gt.detach().cpu()
         return out_dict
+
 
     def _calculate_metrics(self, data, opt):
         metric_type = opt.get('type')

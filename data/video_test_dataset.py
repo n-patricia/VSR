@@ -7,8 +7,8 @@ import numpy as np
 import torch
 import torch.utils.data as data
 
-from data.data_util import generate_from_indices, img2tensor
-from utils import get_logger
+from data.data_util import generate_from_indices
+from utils import get_logger, img2tensor
 from utils.registry import DATASET_REGISTRY
 
 
@@ -80,7 +80,7 @@ class VideoTestDataset(data.Dataset):
         return images
 
     def __len__(self):
-        return len(self.folders)
+        return len(self.data_info['gt_path'])
     
 
 

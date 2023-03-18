@@ -8,11 +8,11 @@ manual_seed: 0
 # dataset and data loader settings
 datasets:
   train:
-    name: REDS4
+    name: REDS
     type: REDSDataset
-    gt_dir: ../../dataset/benchmark/REDS4/GT
-    lq_dir: ../../dataset/benchmark/REDS4/sharp_bicubic
-    meta_info_file: ../../dataset/benchmark/REDS4/meta_info_REDS4.txt
+    gt_dir: ./datasets/REDS/train_sharp
+    lq_dir: ./datasets/REDS/train_sharp_bicubic
+    meta_info_file: ./data/meta_info/meta_info_REDS_GT.txt
 
     num_frame: 3
     gt_size: 256
@@ -21,7 +21,6 @@ datasets:
     use_hflip: true
     use_rot: true
     flip_sequence: true
-    upscale: 4
 
     # data loader
     num_worker_per_gpu: 0
@@ -30,8 +29,8 @@ datasets:
   val:
     name: Vid4
     type: VideoTestDataset
-    gt_dir: ../../dataset/benchmark/Vid4/GT
-    lq_dir: ../../dataset/benchmark/Vid4/BDx4
+    gt_dir: ./datasets/Vid4/GT
+    lq_dir: ./datasets/Vid4/BDx4
 
     num_frame: 3  # not needed
     padding: reflection_circle

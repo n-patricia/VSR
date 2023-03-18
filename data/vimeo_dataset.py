@@ -5,7 +5,8 @@ import numpy as np
 import torch
 import torch.utils.data as data
 
-from data.data_util import augment, img2tensor, paired_random_crop
+from data.data_util import augment, paired_random_crop
+from utils import img2tensor
 from utils.registry import DATASET_REGISTRY
 
 

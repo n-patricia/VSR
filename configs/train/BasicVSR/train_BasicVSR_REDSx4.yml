@@ -10,8 +10,8 @@ datasets:
   train:
     name: REDS
     type: REDSRecurrentDataset
-    gt_dir: ./dataset/REDS/train_sharp
-    lq_dir: ./dataset/REDS/train_sharp_bicubic/X4
+    gt_dir: ./datasets/REDS/train_sharp
+    lq_dir: ./datasets/REDS/train_sharp_bicubic/X4
     meta_info_file: ./data/meta_info/meta_info_REDS_GT.txt
 
     num_frame: 15
@@ -28,8 +28,8 @@ datasets:
   val:
     name: REDS4
     type: VideoRecurrentTestDataset
-    gt_dir: ./dataset/REDS4/GT
-    lq_dir: ./dataset/REDS4/sharp_bicubic
+    gt_dir: ./datasets/REDS4/GT
+    lq_dir: ./datasets/REDS4/sharp_bicubic
 
     num_frame: -1  # not needed
 

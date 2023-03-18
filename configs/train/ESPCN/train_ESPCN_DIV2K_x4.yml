@@ -8,8 +8,8 @@ datasets:
   train:
     name: DIV2K
     type: PairedImageDataset
-    gt_dir: ./dataset/DIV2K/train/hr
-    lq_dir: ./dataset/DIV2K/train/lr/X4
+    gt_dir: ./datasets/DIV2K/train/hr
+    lq_dir: ./datasets/DIV2K/train/lr/X4
 
     # augmentation
     gt_size: 192
@@ -24,8 +24,8 @@ datasets:
   val:
     name: Set5
     type: PairedImageDataset
-    gt_dir: ./dataset/Set5/GTmod12
-    lq_dir: ./dataset/Set5/LRbicx4
+    gt_dir: ./datasets/Set5/GTmod12
+    lq_dir: ./datasets/Set5/LRbicx4
     
     y_channel: ~
 

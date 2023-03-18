@@ -1,5 +1,5 @@
 ##################################################################
-# modify from
+# Modified from
 # https://github.com/Lornatang/ESPCN-PyTorch/blob/master/model.py
 ################################################################## 
 

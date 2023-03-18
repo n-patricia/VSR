@@ -110,7 +110,7 @@ class VideoRecurrentModel(VideoBaseModel):
             # tb_logger.add_scalar(f'metrics/{folder}',
             #                      self.metric_results[folder].mean(), current_iter)
         self._log_validation_metric_values(current_iter, dataset_name, tb_logger)
-        
+
 
     def test(self):
         n = self.lq.size(1)

@@ -5,8 +5,8 @@ import cv2
 import torch
 import torch.utils.data as data
 
-from data.data_util import augment, img2tensor, paired_random_crop
-from utils import get_logger
+from data.data_util import augment, paired_random_crop
+from utils import get_logger, img2tensor
 from utils.registry import DATASET_REGISTRY
 
 
@@ -106,7 +106,7 @@ class REDSRecurrentDataset(data.Dataset):
         # interval_str = ','.join(str(x) for x in self.interval_list)
 
     def __getitem__(self, index):
-        scale = self.opt['upscale']
+        scale = self.opt['scale']
         gt_size = self.opt['gt_size']
         key = self.keys[index]
         clip_name, frame_name = key.split('/')
